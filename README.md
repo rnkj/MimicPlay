@@ -157,20 +157,29 @@ You can download our trained checkpoints from [Link](https://drive.google.com/dr
 -------
 ## Human play data processing
 In the real world experiments, MimicPlay leverages human play data. The following example will guide you to generate a hdf5 dataset file from two MP4 video files (dual camera views for 3D hand trajectory). The steps are:
+- First, install the [CUDA Toolkit 11.8](https://developer.nvidia.com/cuda-11-8-0-download-archive).
 - We use the open-sourced [hand_object_detector](https://github.com/ddshan/hand_object_detector) to detect hand in the video. Setup the environment for the detector through
 ```
-conda create --name handobj python=3.6
+conda create --name handobj python=3.8
 conda activate handobj
-conda install pytorch=1.0.1 torchvision cudatoolkit=10.0 -c pytorch
+conda install pytorch=1.12.1 torchvision=0.13.1 cudatoolkit=11.3 -c pytorch
 cd mimicplay/scripts/human_playdata_process
 git clone https://github.com/ddshan/hand_object_detector && cd hand_object_detector
 pip install -r requirements.txt
+
+# To build hand object detector, Intel MKL should be lower than "2024.1"
+conda install -c conda-forge "mkl<2024.1"
+
 cd lib
 python setup.py build develop
 ```
 - After building the detector, download the [faster_rcnn model](https://drive.google.com/file/d/1H2tWsZkS7tDF8q1-jdjx6V9XrK25EDbE/view) and place the model through
 ```
 cd hand_object_detector
+
+conda install -c conda-forge gdown
+gdown 1H2tWsZkS7tDF8q1-jdjx6V9XrK25EDbE
+
 mkdir -p models/res101_handobj_100K/pascal_voc
 mv faster_rcnn_1_8_132028.pth models/res101_handobj_100K/pascal_voc/.
 ```
